@@ -11,10 +11,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class ManaGeneratorBlock extends Block implements EntityBlock {
+public class SourceGeneratorBlock extends Block implements EntityBlock {
     private Type type;
 
-    public ManaGeneratorBlock(Properties p_49795_, Type type) {
+    public SourceGeneratorBlock(Properties p_49795_, Type type) {
         super(p_49795_);
         this.type = type;
     }
@@ -22,7 +22,7 @@ public class ManaGeneratorBlock extends Block implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        var gen =  new ManaGeneratorBlockEntity(pPos, pState);
+        var gen =  new SourceGeneratorBlockEntity(pPos, pState);
         gen.setType(type);
         return gen;
 
@@ -34,7 +34,7 @@ public class ManaGeneratorBlock extends Block implements EntityBlock {
         if(pLevel.isClientSide)
             return null;
         return ((pLevel1, pPos, pState1, te) ->{
-            if(te instanceof ManaGeneratorBlockEntity tile)
+            if(te instanceof SourceGeneratorBlockEntity tile)
                 tile.tickServerSide();
         });
     }

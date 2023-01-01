@@ -1,17 +1,61 @@
 package com.darkere.enigmaticunity;
 
 public enum Type {
-    MANA  (10000,1000,10,10),
-    NATURA(100000,10000,100,10),
-    GAIA  (1000000,100000,1000,10);
+    DULL(1000,100,2, 10, 10),
+    GLOWING(10000,50,5, 100, 10),
+    SHINING(100000,20,10, 1000, 10);
 
-    int capacity,powerBuffer, conversionPerTick;
-    float conversion;
+    private final int powerBuffer;
+    private final int tickInterval;
+    private final int range;
+    private final int amountPerOperation;
+    private final double conversionRatio;
 
-    Type(int capacity, int powerBuffer, int conversionPerTick, float conversion) {
-        this.capacity = capacity;
+    Type(int powerBuffer, int tickInterval, int range, int amountPerOperation, double conversionRatio) {
         this.powerBuffer = powerBuffer;
-        this.conversionPerTick = conversionPerTick;
-        this.conversion = conversion;
+        this.tickInterval = tickInterval;
+        this.range = range;
+        this.amountPerOperation = amountPerOperation;
+        this.conversionRatio = conversionRatio;
+    }
+
+
+    public int getDefaultPowerBuffer() {
+        return powerBuffer;
+    }
+
+    public int getDefaultConversionPerTick() {
+        return tickInterval;
+    }
+
+    public int getDefaultRange() {
+        return range;
+    }
+
+    public double getDefaultConversionRatio() {
+        return conversionRatio;
+    }
+
+    public int getPowerBuffer() {
+        return Config.get().sourceGenerator.getManaGeneratorPowerBuffer(this);
+    }
+
+    public int getTickInterval() {
+        return Config.get().sourceGenerator.getTickInterval(this);
+    }
+
+    public int getRange() {
+        return Config.get().sourceGenerator.getRange(this);
+    }
+
+    public double getConversionRatio() {
+        return Config.get().sourceGenerator.getSourceConversionRatio(this);
+    }
+
+    public int getDefaultAmountPerOperation() {
+        return amountPerOperation;
+    }
+    public int getAmountPerOperation() {
+        return Config.get().sourceGenerator.getAmountPerOperation(this);
     }
 }

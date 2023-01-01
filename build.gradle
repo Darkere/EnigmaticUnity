@@ -147,22 +147,22 @@ dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.19.2-43.1.47'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.2.2'
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
-    implementation fg.deobf("com.hollingsworth.ars_nouveau:ars_nouveau-1.19.2:3.4.5.240")
+    implementation fg.deobf("com.hollingsworth.ars_nouveau:ars_nouveau-1.19.2:3.6.0.267")
     //compileOnly fg.deobf("vazkii.botania:Botania:1.19.2-436-SNAPSHOT:api")
-    implementation fg.deobf("vazkii.botania:Botania:1.19.2-436-SNAPSHOT")
+//    implementation fg.deobf("vazkii.botania:Botania:1.19.2-436-SNAPSHOT")
     implementation fg.deobf("vazkii.patchouli:Patchouli:1.19.2-77")
     compileOnly fg.deobf("mezz.jei:jei-1.19.2-common-api:11.4.0.285")
     runtimeOnly fg.deobf("mezz.jei:jei-1.19.2-forge:11.4.0.285")
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.1.0:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.1.0")
-    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.19:3.1.9")
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.19:3.1.38")
 
     implementation fg.deobf(project.dependencies.create("mcjty.theoneprobe:theoneprobe:1.19-6.2.0-6") {
         transitive = false
