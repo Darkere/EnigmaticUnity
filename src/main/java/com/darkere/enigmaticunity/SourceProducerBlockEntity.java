@@ -2,6 +2,7 @@ package com.darkere.enigmaticunity;
 
 import com.hollingsworth.arsnouveau.api.util.SourceUtil;
 import com.hollingsworth.arsnouveau.common.entity.EntityFollowProjectile;
+import de.ellpeck.naturesaura.api.aura.chunk.IAuraChunk;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -54,6 +55,7 @@ public class SourceProducerBlockEntity extends BlockEntity {
     public void tickServerSide() {
 
         if (tick++ % type.getTickInterval() == 0) {
+
             var targets = SourceUtil.canGiveSource(getBlockPos(), getLevel(), type.getRange());
             var target = targets.stream().filter(provider -> provider.isValid() && provider.getSource().getMaxSource() > provider.getSource().getSource()).findAny();
             target.ifPresent(jar -> {
@@ -69,6 +71,11 @@ public class SourceProducerBlockEntity extends BlockEntity {
 
                 EntityFollowProjectile aoeProjectile = new EntityFollowProjectile(level, getBlockPos(), jar.getCurrentPos());
                 getLevel().addFreshEntity(aoeProjectile);
+                if(IAuraChunk.getAuraInArea(getLevel(),getBlockPos(),20) < IAuraChunk.DEFAULT_AURA * 2){
+                    var chunk = IAuraChunk.getAuraChunk(getLevel(),getBlockPos());
+                    chunk.storeAura(getBlockPos(),type.getAuraChange(),false,false);
+                }
+
             });
         }
     }

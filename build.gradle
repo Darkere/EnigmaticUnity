@@ -5,7 +5,7 @@ plugins {
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-version = '1.0'
+version = '0.1'
 group = 'com.darkere.enigmaticunity' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'enigmaticunity'
 
@@ -66,6 +66,8 @@ minecraft {
         server {
             workingDirectory project.file('run')
 
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'REGISTRIES'
 
             property 'forge.logging.console.level', 'debug'
@@ -101,6 +103,8 @@ minecraft {
         data {
             workingDirectory project.file('run')
 
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'REGISTRIES'
 
             property 'forge.logging.console.level', 'debug'
@@ -141,6 +145,9 @@ repositories {
     maven { // TOP
         url "https://maven.k-4u.nl"
     }
+    maven {
+        url = "https://maven.ellpeck.de"
+    }
 }
 
 dependencies {
@@ -157,8 +164,8 @@ dependencies {
     //compileOnly fg.deobf("vazkii.botania:Botania:1.19.2-436-SNAPSHOT:api")
 //    implementation fg.deobf("vazkii.botania:Botania:1.19.2-436-SNAPSHOT")
     implementation fg.deobf("vazkii.patchouli:Patchouli:1.19.2-77")
-    compileOnly fg.deobf("mezz.jei:jei-1.19.2-common-api:11.4.0.285")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.19.2-forge:11.4.0.285")
+    compileOnly fg.deobf("mezz.jei:jei-1.19.2-common-api:11.5.0.297")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.19.2-forge:11.5.0.297")
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.1.0:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.1.0")
@@ -167,8 +174,11 @@ dependencies {
     implementation fg.deobf(project.dependencies.create("mcjty.theoneprobe:theoneprobe:1.19-6.2.0-6") {
         transitive = false
     })
+    compileOnly fg.deobf("de.ellpeck.naturesaura:NaturesAura:37.4.152:api")
+    { transitive = false}
 
-
+    runtimeOnly fg.deobf("de.ellpeck.naturesaura:NaturesAura:37.4.152")
+    { transitive = false}
 
 
     // Examples using mod jars from ./libs

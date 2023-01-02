@@ -25,7 +25,9 @@ public class Config {
         private EnumMap<Type, ForgeConfigSpec.IntValue> tickInterval = new EnumMap<>(Type.class);
         private EnumMap<Type, ForgeConfigSpec.IntValue> range = new EnumMap<>(Type.class);
         private EnumMap<Type, ForgeConfigSpec.DoubleValue> conversionRatio = new EnumMap<>(Type.class);
+        private EnumMap<Type, ForgeConfigSpec.DoubleValue> auraBonus = new EnumMap<>(Type.class);
         private EnumMap<Type, ForgeConfigSpec.IntValue> amountPerOperation = new EnumMap<>(Type.class);
+        private EnumMap<Type, ForgeConfigSpec.IntValue> auraChange = new EnumMap<>(Type.class);
 
         public SourceGenerator(ForgeConfigSpec.Builder builder) {
             for (Type value : Type.values()) {
@@ -34,7 +36,9 @@ public class Config {
                 range.put(value, builder.comment("Range the " + value + " Source Generator can get Source from").defineInRange(value + "_range", value.getDefaultRange(), 0, Integer.MAX_VALUE));
                 tickInterval.put(value, builder.comment("Ticks to wait for next operation " + value + " Source Generator").defineInRange(value + "_tickinterval", value.getDefaultConversionPerTick(), 0, Integer.MAX_VALUE));
                 conversionRatio.put(value, builder.comment("Conversion ratio from Source to FE for the  " + value + " Source Generator").defineInRange(value + "_conversionratio", value.getDefaultConversionRatio(), 0, Double.MAX_VALUE));
+                auraBonus.put(value, builder.comment("Multiplier for the power if aura is present with the " + value + " Source Generator").defineInRange(value + "_aurabonus", value.getDefaultAuraBonus(), 0, Double.MAX_VALUE));
                 amountPerOperation.put(value, builder.comment("Amount of Source to convert per Operation  " + value + " Source Generator").defineInRange(value + "_amountperopeation", value.getDefaultAmountPerOperation(), 0, Integer.MAX_VALUE));
+                auraChange.put(value, builder.comment("Amount of Aura to drain/provide when " + value + " Source Generator operates").defineInRange(value + "_drain", value.getDefaultAuraChange(), 0, Integer.MAX_VALUE));
                 builder.pop();
             }
         }
@@ -54,6 +58,14 @@ public class Config {
 
         public int getAmountPerOperation(Type type) {
             return amountPerOperation.get(type).get();
+        }
+
+        public int getAuraChange(Type type) {
+            return auraChange.get(type).get();
+        }
+
+        public double getAuraBonus(Type type) {
+            return auraBonus.get(type).get();
         }
     }
 

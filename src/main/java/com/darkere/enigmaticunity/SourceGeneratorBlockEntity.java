@@ -1,6 +1,7 @@
 package com.darkere.enigmaticunity;
 
 import com.hollingsworth.arsnouveau.api.util.SourceUtil;
+import de.ellpeck.naturesaura.api.aura.chunk.IAuraChunk;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -53,15 +54,20 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
     public void tickServerSide() {
 
         if (tick++ % type.getTickInterval() == 0) {
-            int powerToProduce = (int) (type.getAmountPerOperation() * type.getConversionRatio());
+            var aura = IAuraChunk.getAuraInArea(getLevel(), getBlockPos(), 10);
+            int powerToProduce = (int) (type.getAmountPerOperation() * type.getConversionRatio() * (aura > 0 ? type.getAuraBonus() : 1.0f));
             if (power.receiveEnergy(powerToProduce, true) > 0
                     && SourceUtil.canTakeSource(getBlockPos(), getLevel(), type.getRange()).stream().anyMatch(provider -> provider.isValid() && provider.getSource().getSource() >= type.getAmountPerOperation())) {
+                if (aura > 0) {
+                    var chunk = IAuraChunk.getAuraChunk(getLevel(), getBlockPos());
+                    chunk.drainAura(getBlockPos(), type.getAuraChange(), true, false);
+                }
                 SourceUtil.takeSourceWithParticles(getBlockPos(), getLevel(), type.getRange(), type.getAmountPerOperation());
                 power.receiveEnergy(powerToProduce, false);
             }
         }
-        if (power.getEnergyStored() == 0)
-            return;
+
+
         for (Direction dir : Direction.values()) {
             var pos = getBlockPos().relative(dir);
             var be = getLevel().getBlockEntity(pos);

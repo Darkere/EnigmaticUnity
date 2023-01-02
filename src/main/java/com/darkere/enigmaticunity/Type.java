@@ -1,22 +1,26 @@
 package com.darkere.enigmaticunity;
 
 public enum Type {
-    DULL(1000,100,2, 10, 10),
-    GLOWING(10000,50,5, 100, 10),
-    SHINING(100000,20,10, 1000, 10);
+    DULL(1000,100,2, 10, 10, 2, 10),
+    GLOWING(10000,50,5, 100, 10, 5, 50),
+    SHINING(100000,20,10, 1000, 10, 10, 100);
 
     private final int powerBuffer;
     private final int tickInterval;
     private final int range;
     private final int amountPerOperation;
     private final double conversionRatio;
+    private final double auraBonus;
+    private final int auraChange;
 
-    Type(int powerBuffer, int tickInterval, int range, int amountPerOperation, double conversionRatio) {
+    Type(int powerBuffer, int tickInterval, int range, int amountPerOperation, double conversionRatio, double auraBonus, int auraChange) {
         this.powerBuffer = powerBuffer;
         this.tickInterval = tickInterval;
         this.range = range;
         this.amountPerOperation = amountPerOperation;
         this.conversionRatio = conversionRatio;
+        this.auraBonus = auraBonus;
+        this.auraChange = auraChange;
     }
 
 
@@ -57,5 +61,18 @@ public enum Type {
     }
     public int getAmountPerOperation() {
         return Config.get().sourceGenerator.getAmountPerOperation(this);
+    }
+
+    public int getDefaultAuraChange() {
+        return auraChange;
+    }
+    public int getAuraChange() {
+        return Config.get().sourceGenerator.getAuraChange(this);
+    }
+    public double getDefaultAuraBonus() {
+        return auraBonus;
+    }
+    public double getAuraBonus() {
+        return Config.get().sourceGenerator.getAuraBonus(this);
     }
 }
