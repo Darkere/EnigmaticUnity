@@ -63,6 +63,8 @@ public class SourceProducerBlockEntity extends BlockEntity {
                 var maxProduce = Math.min(type.getAmountPerOperation(),maxInsert);
                 int powerConsumed = (int) (maxProduce * type.getConversionRatio());
                 var actuallyExtracted = power.extractEnergy(powerConsumed, true);
+                if(actuallyExtracted == 0)
+                    return;
                 if(actuallyExtracted < powerConsumed){
                     maxProduce = (int) (actuallyExtracted / type.getConversionRatio());
                 }
