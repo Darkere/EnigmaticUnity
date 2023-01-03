@@ -29,7 +29,7 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
 
     public void setType(Type type) {
         this.type = type;
-        power = new EnergyStorage(type.getPowerBuffer(), type.getMaxTransfer());
+        power = new EnergyStorage(type.getPowerBuffer(), Integer.MAX_VALUE, type.getMaxTransfer());
     }
 
     @Override

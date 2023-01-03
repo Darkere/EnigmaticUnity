@@ -30,7 +30,7 @@ public class SourceProducerBlockEntity extends BlockEntity {
 
     public void setType(Type type) {
         this.type = type;
-        power = new EnergyStorage(type.getPowerBuffer(), type.getMaxTransfer());
+        power = new EnergyStorage(type.getPowerBuffer(), type.getMaxTransfer(), Integer.MAX_VALUE);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class SourceProducerBlockEntity extends BlockEntity {
 
             var targets = SourceUtil.canGiveSource(getBlockPos(), getLevel(), type.getRange());
             var target = targets.stream().filter(provider -> provider.isValid() && provider.getSource().getMaxSource() > provider.getSource().getSource()).findAny();
-            target.ifPresent(jar -> {
+            target.ifPresentOrElse(jar -> {
                 var maxInsert = jar.getSource().getMaxSource() - jar.getSource().getSource();
                 if (maxInsert < type.getAmountPerOperation())
                     return;
@@ -70,11 +70,17 @@ public class SourceProducerBlockEntity extends BlockEntity {
 
                 EntityFollowProjectile aoeProjectile = new EntityFollowProjectile(level, getBlockPos(), jar.getCurrentPos());
                 getLevel().addFreshEntity(aoeProjectile);
-                if (IAuraChunk.getAuraInArea(getLevel(), getBlockPos(), 20) < IAuraChunk.DEFAULT_AURA * 2) {
-                    var chunk = IAuraChunk.getAuraChunk(getLevel(), getBlockPos());
-                    chunk.storeAura(getBlockPos(), type.getAuraChange(), false, false);
-                }
 
+            }, () -> {
+                int powerConsumed = (int) (type.getAmountPerOperation() * type.getConversionRatio());
+                if (power.extractEnergy(powerConsumed, true) != powerConsumed)
+                    return;
+
+                if (IAuraChunk.getAuraInArea(getLevel(), getBlockPos(), 20) + type.getAuraChange() <= IAuraChunk.DEFAULT_AURA * 2) {
+                    power.extractEnergy(powerConsumed, false);
+                    var chunk = IAuraChunk.getAuraChunk(getLevel(), getBlockPos());
+                    chunk.storeAura(getBlockPos(), (int) (type.getAuraChange() * type.getAuraBonus()), false, false);
+                }
             });
         }
     }
