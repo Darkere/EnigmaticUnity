@@ -20,7 +20,7 @@ public class SourceProducerBlockEntity extends BlockEntity {
     EnergyStorage power;
     LazyOptional<IEnergyStorage> powerCap = LazyOptional.of(() -> power);
 
-    Type type = Type.DULL;
+    Type type = Type.DIM;
     long tick = 0;
 
     public SourceProducerBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
@@ -30,7 +30,7 @@ public class SourceProducerBlockEntity extends BlockEntity {
 
     public void setType(Type type) {
         this.type = type;
-        power = new EnergyStorage(type.getPowerBuffer());
+        power = new EnergyStorage(type.getPowerBuffer(), type.getMaxTransfer());
     }
 
     @Override
@@ -60,22 +60,19 @@ public class SourceProducerBlockEntity extends BlockEntity {
             var target = targets.stream().filter(provider -> provider.isValid() && provider.getSource().getMaxSource() > provider.getSource().getSource()).findAny();
             target.ifPresent(jar -> {
                 var maxInsert = jar.getSource().getMaxSource() - jar.getSource().getSource();
-                var maxProduce = Math.min(type.getAmountPerOperation(),maxInsert);
-                int powerConsumed = (int) (maxProduce * type.getConversionRatio());
-                var actuallyExtracted = power.extractEnergy(powerConsumed, true);
-                if(actuallyExtracted == 0)
+                if (maxInsert < type.getAmountPerOperation())
                     return;
-                if(actuallyExtracted < powerConsumed){
-                    maxProduce = (int) (actuallyExtracted / type.getConversionRatio());
-                }
-                jar.getSource().addSource(maxProduce);
-                power.extractEnergy(actuallyExtracted,false);
+                int powerConsumed = (int) (type.getAmountPerOperation() * type.getConversionRatio());
+                if (power.extractEnergy(powerConsumed, true) != powerConsumed)
+                    return;
+                jar.getSource().addSource(type.getAmountPerOperation());
+                power.extractEnergy(powerConsumed, false);
 
                 EntityFollowProjectile aoeProjectile = new EntityFollowProjectile(level, getBlockPos(), jar.getCurrentPos());
                 getLevel().addFreshEntity(aoeProjectile);
-                if(IAuraChunk.getAuraInArea(getLevel(),getBlockPos(),20) < IAuraChunk.DEFAULT_AURA * 2){
-                    var chunk = IAuraChunk.getAuraChunk(getLevel(),getBlockPos());
-                    chunk.storeAura(getBlockPos(),type.getAuraChange(),false,false);
+                if (IAuraChunk.getAuraInArea(getLevel(), getBlockPos(), 20) < IAuraChunk.DEFAULT_AURA * 2) {
+                    var chunk = IAuraChunk.getAuraChunk(getLevel(), getBlockPos());
+                    chunk.storeAura(getBlockPos(), type.getAuraChange(), false, false);
                 }
 
             });

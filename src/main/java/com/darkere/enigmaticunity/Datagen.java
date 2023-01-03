@@ -24,8 +24,9 @@ public class Datagen   {
 
         @Override
         protected void addTranslations() {
-            Registry.sourceProducerBlocks.forEach((type, object) -> add(object.get(), CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL,type.name()) + " Resonating Crystal Interface"));
-            Registry.sourceGeneratorBlocks.forEach((type, object) -> add(object.get(),CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL,type.name()) + " Pulsating Crystal Interface"));
+            Registry.sourceProducerBlocks.forEach((type, object) -> add(object.get(), type.getFName() + " Resonating Crystal"));
+            Registry.sourceGeneratorBlocks.forEach((type, object) -> add(object.get(),type.getFName() + " Pulsating Crystal"));
+            add(EU.EUCreativeTab.CREATIVE_MODE_TAB.getRecipeFolderName(),"Enigmatic Unity");
         }
     }
 }

@@ -1,9 +1,11 @@
 package com.darkere.enigmaticunity;
 
+import com.google.common.base.CaseFormat;
+
 public enum Type {
-    DULL(1000,100,2, 10, 10, 2, 10),
-    GLOWING(10000,50,5, 100, 10, 5, 50),
-    SHINING(100000,20,10, 1000, 10, 10, 100);
+    DIM(1000, 100, 2, 10, 10, 2, 10, 100),
+    BRIGHT(10000, 50, 5, 100, 10, 5, 50, 1000),
+    IRIDESCENT(100000, 20, 10, 1000, 10, 10, 100, 10000);
 
     private final int powerBuffer;
     private final int tickInterval;
@@ -13,7 +15,9 @@ public enum Type {
     private final double auraBonus;
     private final int auraChange;
 
-    Type(int powerBuffer, int tickInterval, int range, int amountPerOperation, double conversionRatio, double auraBonus, int auraChange) {
+    private final int maxTransfer;
+
+    Type(int powerBuffer, int tickInterval, int range, int amountPerOperation, double conversionRatio, double auraBonus, int auraChange, int maxTransfer) {
         this.powerBuffer = powerBuffer;
         this.tickInterval = tickInterval;
         this.range = range;
@@ -21,6 +25,7 @@ public enum Type {
         this.conversionRatio = conversionRatio;
         this.auraBonus = auraBonus;
         this.auraChange = auraChange;
+        this.maxTransfer = maxTransfer;
     }
 
 
@@ -59,6 +64,7 @@ public enum Type {
     public int getDefaultAmountPerOperation() {
         return amountPerOperation;
     }
+
     public int getAmountPerOperation() {
         return Config.get().sourceGenerator.getAmountPerOperation(this);
     }
@@ -66,13 +72,28 @@ public enum Type {
     public int getDefaultAuraChange() {
         return auraChange;
     }
+
     public int getAuraChange() {
         return Config.get().sourceGenerator.getAuraChange(this);
     }
+
     public double getDefaultAuraBonus() {
         return auraBonus;
     }
+
     public double getAuraBonus() {
         return Config.get().sourceGenerator.getAuraBonus(this);
+    }
+
+    public String getFName() {
+        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, name());
+    }
+
+    public int getDefaultMaxTransfer() {
+        return maxTransfer;
+    }
+
+    public int getMaxTransfer() {
+        return Config.get().sourceGenerator.getMaxTransfer(this);
     }
 }

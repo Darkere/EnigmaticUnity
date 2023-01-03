@@ -32,7 +32,7 @@ public class EU {
         public static final CreativeModeTab CREATIVE_MODE_TAB = new CreativeModeTab(EU.MODID) {
             @Override
             public @NotNull ItemStack makeIcon() {
-                return new ItemStack(Registry.sourceGeneratorItems.get(Type.DULL).get());
+                return new ItemStack(Registry.sourceGeneratorItems.get(Type.DIM).get());
             }
         };
     }

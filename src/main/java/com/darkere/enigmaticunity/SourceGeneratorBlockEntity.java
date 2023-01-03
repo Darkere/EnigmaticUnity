@@ -19,7 +19,7 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
     EnergyStorage power;
     LazyOptional<IEnergyStorage> powerCap = LazyOptional.of(() -> power);
 
-    Type type = Type.DULL;
+    Type type = Type.DIM;
     long tick = 0;
 
     public SourceGeneratorBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
@@ -29,7 +29,7 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
 
     public void setType(Type type) {
         this.type = type;
-        power = new EnergyStorage(type.getPowerBuffer());
+        power = new EnergyStorage(type.getPowerBuffer(), type.getMaxTransfer());
     }
 
     @Override
@@ -56,8 +56,8 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
         if (tick++ % type.getTickInterval() == 0) {
             var aura = IAuraChunk.getAuraInArea(getLevel(), getBlockPos(), 10);
             int powerToProduce = (int) (type.getAmountPerOperation() * type.getConversionRatio() * (aura > 0 ? type.getAuraBonus() : 1.0f));
-            if (power.receiveEnergy(powerToProduce, true) > 0
-                    && SourceUtil.canTakeSource(getBlockPos(), getLevel(), type.getRange()).stream().anyMatch(provider -> provider.isValid() && provider.getSource().getSource() >= type.getAmountPerOperation())) {
+            if (power.receiveEnergy(powerToProduce, true) == powerToProduce
+                && SourceUtil.canTakeSource(getBlockPos(), getLevel(), type.getRange()).stream().anyMatch(provider -> provider.isValid() && provider.getSource().getSource() >= type.getAmountPerOperation())) {
                 if (aura > 0) {
                     var chunk = IAuraChunk.getAuraChunk(getLevel(), getBlockPos());
                     chunk.drainAura(getBlockPos(), type.getAuraChange(), true, false);
