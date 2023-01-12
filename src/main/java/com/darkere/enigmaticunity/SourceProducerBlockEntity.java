@@ -39,7 +39,7 @@ public class SourceProducerBlockEntity extends BlockEntity {
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ENERGY) {
-            if (side == facing || side == null)
+            if (side == facing.getOpposite() || side == null)
                 return powerCap.cast();
 
         }
