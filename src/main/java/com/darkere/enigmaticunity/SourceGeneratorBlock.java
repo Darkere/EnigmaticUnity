@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 public class SourceGeneratorBlock extends Block implements EntityBlock {
     private Type type;
-    private static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
     private static final VoxelShape SHAPE_N_DIM = Stream.of(
             Block.box(4, 4, 14, 12, 12, 16),
@@ -94,7 +94,7 @@ public class SourceGeneratorBlock extends Block implements EntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
+        return this.defaultBlockState().setValue(FACING, context.getClickedFace());
     }
 
     @Override

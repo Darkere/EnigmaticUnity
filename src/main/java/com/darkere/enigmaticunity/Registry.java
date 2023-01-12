@@ -32,13 +32,13 @@ public class Registry {
     static {
         for (Type type : Type.values()) {
             String name = type.toString().toLowerCase(Locale.ROOT) + "_source_generator";
-            var block = BLOCKS.register(name, () -> new SourceGeneratorBlock(BlockBehaviour.Properties.of(Material.STONE), type));
+            var block = BLOCKS.register(name, () -> new SourceGeneratorBlock(BlockBehaviour.Properties.of(Material.STONE).strength(1), type));
             var item = ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(EU.EUCreativeTab.CREATIVE_MODE_TAB)));
             sourceGeneratorBlocks.put(type, block);
             sourceGeneratorItems.put(type, item);
 
             String sourceProducerName = type.toString().toLowerCase(Locale.ROOT) + "_source_producer";
-            var spblock = BLOCKS.register(sourceProducerName, () -> new SourceProducerBlock(BlockBehaviour.Properties.of(Material.STONE), type));
+            var spblock = BLOCKS.register(sourceProducerName, () -> new SourceProducerBlock(BlockBehaviour.Properties.of(Material.STONE).strength(1), type));
             var spitem = ITEMS.register(sourceProducerName, () -> new BlockItem(spblock.get(), new Item.Properties().tab(EU.EUCreativeTab.CREATIVE_MODE_TAB)));
             sourceProducerBlocks.put(type, spblock);
             sourceProducerItems.put(type, spitem);

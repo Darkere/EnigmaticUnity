@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "g": {
+      "item": "ars_nouveau:source_gem"
+    },
+    "i": {
+      "item": "naturesaura:tainted_gold"
+    },
+    "p": {
+      "item": "minecraft:glass_pane"
+    },
+    "w": {
+      "item": "ars_nouveau:purple_archwood_log"
+    }
+  },
+  "pattern": [
+    "ppp",
+    "pgp",
+    "iwi"
+  ],
+  "result": {
+    "item": "enigmaticunity:bright_source_producer"
+  }
+}

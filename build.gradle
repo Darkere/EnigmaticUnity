@@ -5,7 +5,7 @@ plugins {
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-version = '0.1'
+version = '1.0'
 group = 'com.darkere.enigmaticunity' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'enigmaticunity'
 
@@ -174,10 +174,11 @@ dependencies {
     implementation fg.deobf(project.dependencies.create("mcjty.theoneprobe:theoneprobe:1.19-6.2.0-6") {
         transitive = false
     })
-    compileOnly fg.deobf("de.ellpeck.naturesaura:NaturesAura:37.4.152:api")
-    { transitive = false}
+//    compileOnly fg.deobf("de.ellpeck.naturesaura:NaturesAura:37.4.152:api")
+//    { transitive = false}
+    // not api only for recipe gen
 
-    runtimeOnly fg.deobf("de.ellpeck.naturesaura:NaturesAura:37.4.152")
+    implementation fg.deobf("de.ellpeck.naturesaura:NaturesAura:37.4.152")
     { transitive = false}
 
 

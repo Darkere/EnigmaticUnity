@@ -1,10 +1,12 @@
 package com.darkere.enigmaticunity;
 
 import com.hollingsworth.arsnouveau.api.util.SourceUtil;
+import com.mojang.math.Vector3d;
 import de.ellpeck.naturesaura.api.aura.chunk.IAuraChunk;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -22,9 +24,11 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
     Type type = Type.DIM;
     long tick = 0;
 
+    Direction facing;
+
     public SourceGeneratorBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
         super(Registry.sourceGeneratorBlockEntityType.get(), p_155229_, p_155230_);
-
+        facing = p_155230_.getValue(SourceGeneratorBlock.FACING);
     }
 
     public void setType(Type type) {
@@ -34,8 +38,10 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY)
-            return powerCap.cast();
+        if (cap == ForgeCapabilities.ENERGY){
+            if (side == facing || side == null)
+                return powerCap.cast();
+        }
         return super.getCapability(cap, side);
     }
 
@@ -55,12 +61,17 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
 
         if (tick++ % type.getTickInterval() == 0) {
             var aura = IAuraChunk.getAuraInArea(getLevel(), getBlockPos(), 10);
-            int powerToProduce = (int) (type.getAmountPerOperation() * type.getConversionRatio() * (aura > 0 ? type.getAuraBonus() : 1.0f));
+            int powerToProduce = (int) (type.getAmountPerOperation() * Config.get().getSourceConversion() + (aura > 0 ? type.getAuraChange() * Config.get().getAuraConversion() : 0.0f));
+            facing = getLevel().getBlockState(getBlockPos()).getValue(SourceGeneratorBlock.FACING);
             if (power.receiveEnergy(powerToProduce, true) == powerToProduce
                 && SourceUtil.canTakeSource(getBlockPos(), getLevel(), type.getRange()).stream().anyMatch(provider -> provider.isValid() && provider.getSource().getSource() >= type.getAmountPerOperation())) {
                 if (aura > 0) {
                     var chunk = IAuraChunk.getAuraChunk(getLevel(), getBlockPos());
                     chunk.drainAura(getBlockPos(), type.getAuraChange(), true, false);
+
+                    var vec = new Vector3d(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+
+                    EU.send(new ParticleMessage(vec, false, facing), getBlockPos(), 100, getLevel());
                 }
                 SourceUtil.takeSourceWithParticles(getBlockPos(), getLevel(), type.getRange(), type.getAmountPerOperation());
                 power.receiveEnergy(powerToProduce, false);
@@ -68,18 +79,17 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
         }
 
 
-        for (Direction dir : Direction.values()) {
-            var pos = getBlockPos().relative(dir);
+            var pos = getBlockPos().relative(facing.getOpposite());
             var be = getLevel().getBlockEntity(pos);
             if (be != null) {
-                be.getCapability(ForgeCapabilities.ENERGY, dir.getOpposite()).ifPresent(powerstorage -> {
-                    int powerToTransfer = Integer.MAX_VALUE; //TODO: powertransfer config
+                be.getCapability(ForgeCapabilities.ENERGY, facing.getOpposite()).ifPresent(powerstorage -> {
+                    int powerToTransfer = Integer.MAX_VALUE;
                     int maxReceive = powerstorage.receiveEnergy(powerToTransfer, true);
                     int toTransfer = power.extractEnergy(maxReceive, true);
                     power.extractEnergy(toTransfer, false);
                     powerstorage.receiveEnergy(toTransfer, false);
                 });
             }
-        }
+
     }
 }

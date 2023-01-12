@@ -2,6 +2,7 @@ package com.darkere.enigmaticunity;
 
 import com.hollingsworth.arsnouveau.api.util.SourceUtil;
 import com.hollingsworth.arsnouveau.common.entity.EntityFollowProjectile;
+import com.mojang.math.Vector3d;
 import de.ellpeck.naturesaura.api.aura.chunk.IAuraChunk;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,9 +24,11 @@ public class SourceProducerBlockEntity extends BlockEntity {
     Type type = Type.DIM;
     long tick = 0;
 
+    Direction facing;
+
     public SourceProducerBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
         super(Registry.sourceProducerBlockEntityType.get(), p_155229_, p_155230_);
-
+        facing = p_155230_.getValue(SourceGeneratorBlock.FACING);
     }
 
     public void setType(Type type) {
@@ -35,8 +38,11 @@ public class SourceProducerBlockEntity extends BlockEntity {
 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY)
-            return powerCap.cast();
+        if (cap == ForgeCapabilities.ENERGY) {
+            if (side == facing || side == null)
+                return powerCap.cast();
+
+        }
         return super.getCapability(cap, side);
     }
 
@@ -58,11 +64,12 @@ public class SourceProducerBlockEntity extends BlockEntity {
 
             var targets = SourceUtil.canGiveSource(getBlockPos(), getLevel(), type.getRange());
             var target = targets.stream().filter(provider -> provider.isValid() && provider.getSource().getMaxSource() > provider.getSource().getSource()).findAny();
+            facing = getLevel().getBlockState(getBlockPos()).getValue(SourceProducerBlock.FACING);
             target.ifPresentOrElse(jar -> {
                 var maxInsert = jar.getSource().getMaxSource() - jar.getSource().getSource();
                 if (maxInsert < type.getAmountPerOperation())
                     return;
-                int powerConsumed = (int) (type.getAmountPerOperation() * type.getConversionRatio());
+                int powerConsumed = (int) (type.getAmountPerOperation() * Config.get().getSourceConversion());
                 if (power.extractEnergy(powerConsumed, true) != powerConsumed)
                     return;
                 jar.getSource().addSource(type.getAmountPerOperation());
@@ -72,14 +79,16 @@ public class SourceProducerBlockEntity extends BlockEntity {
                 getLevel().addFreshEntity(aoeProjectile);
 
             }, () -> {
-                int powerConsumed = (int) (type.getAmountPerOperation() * type.getConversionRatio());
+                int powerConsumed = (int) (type.getAuraChange() * Config.get().getAuraConversion());
                 if (power.extractEnergy(powerConsumed, true) != powerConsumed)
                     return;
 
                 if (IAuraChunk.getAuraInArea(getLevel(), getBlockPos(), 20) + type.getAuraChange() <= IAuraChunk.DEFAULT_AURA * 2) {
                     power.extractEnergy(powerConsumed, false);
                     var chunk = IAuraChunk.getAuraChunk(getLevel(), getBlockPos());
-                    chunk.storeAura(getBlockPos(), (int) (type.getAuraChange() * type.getAuraBonus()), false, false);
+                    chunk.storeAura(getBlockPos(), type.getAuraChange(), false, false);
+                    var vec = new Vector3d(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+                    EU.send(new ParticleMessage(vec, true, facing), getBlockPos(), 100, getLevel());
                 }
             });
         }

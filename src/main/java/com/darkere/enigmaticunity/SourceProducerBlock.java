@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 public class SourceProducerBlock extends Block implements EntityBlock {
     private Type type;
 
-    private static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
     private static final VoxelShape SHAPE_N = Shapes.join(
             Block.box(4.5, 4.5, 6, 11.5, 11.5, 13),
@@ -54,12 +54,13 @@ public class SourceProducerBlock extends Block implements EntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
+        return this.defaultBlockState().setValue(FACING, context.getClickedFace());
     }
 
     @Override
     public BlockState rotate (BlockState state, Rotation rot) {
-        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
+        var newDir = rot.rotate(state.getValue(FACING));
+        return state.setValue(FACING, newDir);
     }
 
     @Override

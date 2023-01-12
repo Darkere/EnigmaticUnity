@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "enigmaticunity:iridescent_source_producer"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "item": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "ars_nouveau:source_gem"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "item",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "enigmaticunity:iridescent_source_producer"
+    ]
+  }
+}
