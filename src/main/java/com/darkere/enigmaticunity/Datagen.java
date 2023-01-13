@@ -56,7 +56,7 @@ public class Datagen   {
         protected void addTranslations() {
             Registry.sourceProducerBlocks.forEach((type, object) -> add(object.get(), type.getFName() + " Resonating Crystal"));
             Registry.sourceGeneratorBlocks.forEach((type, object) -> add(object.get(),type.getFName() + " Pulsating Crystal"));
-            add(EU.EUCreativeTab.CREATIVE_MODE_TAB.getRecipeFolderName(),"Enigmatic Unity");
+            add("itemGroup." + EU.MODID,"Enigmatic Unity");
         }
     }
     static class EUBlockLoot extends BlockLoot {
