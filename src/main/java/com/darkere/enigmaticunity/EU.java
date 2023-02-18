@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -30,6 +31,7 @@ public class EU {
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
     public static final Config SERVER_CONFIG = new Config();
+    public static boolean NA_LOADED = false;
 
     private static final String NETWORK_VERSION = "1";
     private static final ResourceLocation CHANNEL_ID = new ResourceLocation(EU.MODID + ":" + "network");
@@ -40,6 +42,7 @@ public class EU {
     public EU() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SERVER_CONFIG.spec);
         Registry.register();
+        NA_LOADED = ModList.get().isLoaded("naturesaura");
         // Register the commonSetup method for modloading
         // Register the Deferred Register to the mod event bus so blocks get registered
 

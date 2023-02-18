@@ -5,17 +5,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -24,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
 
-public class SourceProducerBlock extends Block implements EntityBlock {
+public class SourceProducerBlock extends Block implements EntityBlock,SimpleWaterloggedBlock {
     private Type type;
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
@@ -45,6 +47,7 @@ public class SourceProducerBlock extends Block implements EntityBlock {
     public SourceProducerBlock(Properties p_49795_, Type type) {
         super(p_49795_);
         this.type = type;
+        registerDefaultState(defaultBlockState().setValue(BlockStateProperties.WATERLOGGED,false));
     }
 
     @Override
@@ -54,9 +57,25 @@ public class SourceProducerBlock extends Block implements EntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getClickedFace());
+        FluidState fluidState = context.getLevel().getFluidState(context.getClickedPos());
+        return this.defaultBlockState().setValue(FACING, context.getClickedFace()).setValue(BlockStateProperties.WATERLOGGED,fluidState.getType() == Fluids.WATER);
     }
 
+    @Override
+    @SuppressWarnings("deprecation")
+    public FluidState getFluidState(BlockState state) {
+        return Boolean.TRUE.equals(state.getValue(BlockStateProperties.WATERLOGGED)) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+    @Override
+    public boolean placeLiquid(LevelAccessor worldIn, BlockPos pos, BlockState state, FluidState fluidStateIn) {
+        return SimpleWaterloggedBlock.super.placeLiquid(worldIn, pos, state, fluidStateIn);
+    }
+
+
+    @Override
+    public boolean canPlaceLiquid(BlockGetter worldIn, BlockPos pos, BlockState state, Fluid fluidIn) {
+        return SimpleWaterloggedBlock.super.canPlaceLiquid(worldIn, pos, state, fluidIn);
+    }
     @Override
     public BlockState rotate (BlockState state, Rotation rot) {
         var newDir = rot.rotate(state.getValue(FACING));
@@ -71,6 +90,7 @@ public class SourceProducerBlock extends Block implements EntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
+        builder.add(BlockStateProperties.WATERLOGGED);
     }
 
     @Nullable

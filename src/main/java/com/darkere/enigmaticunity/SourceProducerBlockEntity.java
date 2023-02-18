@@ -79,6 +79,8 @@ public class SourceProducerBlockEntity extends BlockEntity {
                 getLevel().addFreshEntity(aoeProjectile);
 
             }, () -> {
+                if(!EU.NA_LOADED)
+                    return;
                 int powerConsumed = (int) (type.getAuraChange() * Config.get().getAuraConversion());
                 if (power.extractEnergy(powerConsumed, true) != powerConsumed)
                     return;

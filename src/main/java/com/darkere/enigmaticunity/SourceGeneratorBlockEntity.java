@@ -60,7 +60,9 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
     public void tickServerSide() {
 
         if (tick++ % type.getTickInterval() == 0) {
-            var aura = IAuraChunk.getAuraInArea(getLevel(), getBlockPos(), 10);
+            int aura = -1;
+            if(EU.NA_LOADED)
+                aura = IAuraChunk.getAuraInArea(getLevel(), getBlockPos(), 10);
             int powerToProduce = (int) (type.getAmountPerOperation() * Config.get().getSourceConversion() + (aura > 0 ? type.getAuraChange() * Config.get().getAuraConversion() : 0.0f));
             facing = getLevel().getBlockState(getBlockPos()).getValue(SourceGeneratorBlock.FACING);
             if (power.receiveEnergy(powerToProduce, true) == powerToProduce
@@ -82,7 +84,7 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
             var pos = getBlockPos().relative(facing.getOpposite());
             var be = getLevel().getBlockEntity(pos);
             if (be != null) {
-                be.getCapability(ForgeCapabilities.ENERGY, facing.getOpposite()).ifPresent(powerstorage -> {
+                be.getCapability(ForgeCapabilities.ENERGY, facing).ifPresent(powerstorage -> {
                     int powerToTransfer = Integer.MAX_VALUE;
                     int maxReceive = powerstorage.receiveEnergy(powerToTransfer, true);
                     int toTransfer = power.extractEnergy(maxReceive, true);
