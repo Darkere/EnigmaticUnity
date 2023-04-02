@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.stream.Stream;
 
 public class SourceProducerBlock extends Block implements EntityBlock,SimpleWaterloggedBlock {
-    private Type type;
+    public Type type;
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
@@ -96,10 +96,7 @@ public class SourceProducerBlock extends Block implements EntityBlock,SimpleWate
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        var gen =  new SourceProducerBlockEntity(pPos, pState);
-        gen.setType(type);
-        return gen;
-
+        return new SourceProducerBlockEntity(pPos, pState);
     }
 
     @Nullable

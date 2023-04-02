@@ -31,7 +31,13 @@ public class ParticleMessage {
     }
 
     public static ParticleMessage decode(FriendlyByteBuf buf) {
-        return new ParticleMessage(new Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble()), buf.readBoolean(), Direction.fromNormal(buf.readBlockPos()));
+        var x = buf.readDouble();
+        var y = buf.readDouble();
+        var z = buf.readDouble();
+        var vect = new Vector3d(x,y,z);
+        var generate = buf.readBoolean();
+        var pos = buf.readBlockPos();
+        return new ParticleMessage(vect,generate,Direction.fromNormal(pos));
     }
 
     public static void handle(ParticleMessage msg, Supplier<NetworkEvent.Context> contextSupplier) {
@@ -73,5 +79,6 @@ public class ParticleMessage {
                 }
             }
         });
+        contextSupplier.get().setPacketHandled(true);
     }
 }

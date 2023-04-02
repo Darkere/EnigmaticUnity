@@ -29,10 +29,7 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
     public SourceGeneratorBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
         super(Registry.sourceGeneratorBlockEntityType.get(), p_155229_, p_155230_);
         facing = p_155230_.getValue(SourceGeneratorBlock.FACING);
-    }
-
-    public void setType(Type type) {
-        this.type = type;
+        type = ((SourceGeneratorBlock)p_155230_.getBlock()).type;
         power = new EnergyStorage(type.getPowerBuffer(), Integer.MAX_VALUE, type.getMaxTransfer());
     }
 

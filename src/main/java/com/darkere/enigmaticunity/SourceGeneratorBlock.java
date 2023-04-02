@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.stream.Stream;
 
 public class SourceGeneratorBlock extends Block implements EntityBlock, SimpleWaterloggedBlock {
-    private Type type;
+    public Type type;
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
     private static final VoxelShape SHAPE_N_DIM = Stream.of(
@@ -136,10 +136,7 @@ public class SourceGeneratorBlock extends Block implements EntityBlock, SimpleWa
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        var gen =  new SourceGeneratorBlockEntity(pPos, pState);
-        gen.setType(type);
-        return gen;
-
+        return new SourceGeneratorBlockEntity(pPos, pState);
     }
 
     @Nullable
