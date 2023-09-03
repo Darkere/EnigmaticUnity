@@ -59,13 +59,15 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
         if (tick++ % type.getTickInterval() == 0) {
             int aura = -1;
             if(EU.NA_LOADED)
-                aura = IAuraChunk.getAuraInArea(getLevel(), getBlockPos(), 10);
-            int powerToProduce = (int) (type.getAmountPerOperation() * Config.get().getSourceConversion() + (aura > 0 ? type.getAuraChange() * Config.get().getAuraConversion() : 0.0f));
+                aura = IAuraChunk.getAuraInArea(getLevel(), getBlockPos(), 35);
+            var aurachange =type.getAuraChange() * Config.get().getAuraConversion();
+            int powerToProduce = (int) (type.getAmountPerOperation() * Config.get().getSourceConversion() + (aura > aurachange ? aurachange : 0.0f));
             facing = getLevel().getBlockState(getBlockPos()).getValue(SourceGeneratorBlock.FACING);
             if (power.receiveEnergy(powerToProduce, true) == powerToProduce
                 && SourceUtil.canTakeSource(getBlockPos(), getLevel(), type.getRange()).stream().anyMatch(provider -> provider.isValid() && provider.getSource().getSource() >= type.getAmountPerOperation())) {
                 if (aura > 0) {
-                    var chunk = IAuraChunk.getAuraChunk(getLevel(), getBlockPos());
+                    var spot = IAuraChunk.getHighestSpot(getLevel(),getBlockPos(),35,getBlockPos());
+                    var chunk = IAuraChunk.getAuraChunk(getLevel(), spot);
                     chunk.drainAura(getBlockPos(), type.getAuraChange(), true, false);
 
                     var vec = new Vector3d(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
