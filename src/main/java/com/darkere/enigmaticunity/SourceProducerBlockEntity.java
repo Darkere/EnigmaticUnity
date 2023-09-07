@@ -86,7 +86,7 @@ public class SourceProducerBlockEntity extends BlockEntity {
                     power.extractEnergy(powerConsumed, false);
                     var spot = IAuraChunk.getLowestSpot(getLevel(),getBlockPos(),20,getBlockPos());
                     var chunk = IAuraChunk.getAuraChunk(getLevel(), spot);
-                    chunk.storeAura(getBlockPos(), type.getAuraChange(), false, false);
+                    chunk.storeAura(spot, type.getAuraChange(), false, false);
                     var vec = new Vector3d(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
                     EU.send(new ParticleMessage(vec, true, facing), getBlockPos(), 100, getLevel());
                 }

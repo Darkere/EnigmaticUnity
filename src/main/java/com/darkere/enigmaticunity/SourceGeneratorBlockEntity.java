@@ -68,7 +68,7 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
                 if (aura > 0) {
                     var spot = IAuraChunk.getHighestSpot(getLevel(),getBlockPos(),35,getBlockPos());
                     var chunk = IAuraChunk.getAuraChunk(getLevel(), spot);
-                    chunk.drainAura(getBlockPos(), type.getAuraChange(), true, false);
+                    chunk.drainAura(spot, type.getAuraChange(), true, false);
 
                     var vec = new Vector3d(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
 
