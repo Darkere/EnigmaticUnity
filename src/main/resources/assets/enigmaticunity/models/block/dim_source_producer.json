@@ -2,11 +2,11 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"particle": "enigmaticunity:blocks/base",
-		"base": "enigmaticunity:blocks/base"
+		"particle": "enigmaticunity:block/base",
+		"base": "enigmaticunity:block/base"
 	},
 	"item_render_order": ["solid","cutout"],
-  	"loader": "forge:composite",
+  	"loader": "neoforge:composite",
 	"children": {
 		"solid": {
 			"elements": [
@@ -103,7 +103,7 @@
 				}
 			],
 			"render_type": "minecraft:solid",
-			"textures": {"base": "enigmaticunity:blocks/base"}
+			"textures": {"base": "enigmaticunity:block/base"}
 		  },
 		  "cutout": {
 			"elements": [
@@ -177,7 +177,7 @@
 				}
 			],
 			"render_type": "minecraft:cutout",
-			"textures": {"base": "enigmaticunity:blocks/base"}
+			"textures": {"base": "enigmaticunity:block/base"}
 		  }
 	},
 	"display": {

@@ -2,6 +2,7 @@ package com.darkere.enigmaticunity;
 
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -13,8 +14,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -27,8 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.stream.Stream;
 
 public class SourceGeneratorBlock extends Block implements EntityBlock, SimpleWaterloggedBlock {
-    public Type type;
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public EUBlockType EUBlockType;
 
     private static final VoxelShape SHAPE_N_DIM = Stream.of(
             Block.box(4, 4, 14, 12, 12, 16),
@@ -80,27 +78,27 @@ public class SourceGeneratorBlock extends Block implements EntityBlock, SimpleWa
 
 
     //public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    public SourceGeneratorBlock(Properties p_49795_, Type type) {
+    public SourceGeneratorBlock(Properties p_49795_, EUBlockType EUBlockType) {
         super(p_49795_);
-        this.type = type;
+        this.EUBlockType = EUBlockType;
         registerDefaultState(defaultBlockState().setValue(BlockStateProperties.WATERLOGGED,false));
     }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        if (type == Type.DIM) {
-            return SHAPES_DIM[state.getValue(FACING).get3DDataValue()];
-        } else if (type == Type.BRIGHT) {
-            return SHAPES_BRIGHT[state.getValue(FACING).get3DDataValue()];
+        if (EUBlockType == EUBlockType.DIM) {
+            return SHAPES_DIM[state.getValue(BlockStateProperties.FACING).get3DDataValue()];
+        } else if (EUBlockType == EUBlockType.BRIGHT) {
+            return SHAPES_BRIGHT[state.getValue(BlockStateProperties.FACING).get3DDataValue()];
         } else {
-            return SHAPES_IRIDESCENT[state.getValue(FACING).get3DDataValue()];
+            return SHAPES_IRIDESCENT[state.getValue(BlockStateProperties.FACING).get3DDataValue()];
         }
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         FluidState fluidState = context.getLevel().getFluidState(context.getClickedPos());
-        return this.defaultBlockState().setValue(FACING, context.getClickedFace()).setValue(BlockStateProperties.WATERLOGGED,fluidState.getType() == Fluids.WATER);
+        return this.defaultBlockState().setValue(BlockStateProperties.FACING, context.getClickedFace()).setValue(BlockStateProperties.WATERLOGGED,fluidState.getType() == Fluids.WATER);
     }
 
     @Override
@@ -114,22 +112,22 @@ public class SourceGeneratorBlock extends Block implements EntityBlock, SimpleWa
     }
 
     @Override
-    public boolean canPlaceLiquid(BlockGetter worldIn, BlockPos pos, BlockState state, Fluid fluidIn) {
-        return SimpleWaterloggedBlock.super.canPlaceLiquid(worldIn, pos, state, fluidIn);
+    public boolean canPlaceLiquid(Player player, BlockGetter worldIn, BlockPos pos, BlockState state, Fluid fluidIn) {
+        return SimpleWaterloggedBlock.super.canPlaceLiquid(player,worldIn, pos, state, fluidIn);
     }
     @Override
     public BlockState rotate (BlockState state, Rotation rot) {
-        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
+        return state.setValue(BlockStateProperties.FACING, rot.rotate(state.getValue(BlockStateProperties.FACING)));
     }
 
     @Override
     public BlockState mirror (BlockState state, Mirror mirrorIn) {
-        return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
+        return state.rotate(mirrorIn.getRotation(state.getValue(BlockStateProperties.FACING)));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+        builder.add(BlockStateProperties.FACING);
         builder.add(BlockStateProperties.WATERLOGGED);
     }
 

@@ -6,21 +6,20 @@ import com.mojang.logging.LogUtils;
 import de.ellpeck.naturesaura.api.aura.chunk.IAuraChunk;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -34,39 +33,41 @@ public class EU {
     public static boolean NA_LOADED = false;
 
     private static final String NETWORK_VERSION = "1";
-    private static final ResourceLocation CHANNEL_ID = new ResourceLocation(EU.MODID + ":" + "network");
-    private static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(CHANNEL_ID, () -> NETWORK_VERSION, s -> s.equals(NETWORK_VERSION), s -> true);
 
     private int ID = 0;
 
-    public EU() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SERVER_CONFIG.spec);
-        Registry.register();
+    public EU(IEventBus ModEventBus, ModContainer modContainer) {
+        modContainer.registerConfig(ModConfig.Type.SERVER, SERVER_CONFIG.spec);
+        Registry.register(ModEventBus);
+        ModEventBus.addListener(EU::register);
+        ModEventBus.addListener(EU::RegisterCapabilities);
         NA_LOADED = ModList.get().isLoaded("naturesaura");
         // Register the commonSetup method for modloading
         // Register the Deferred Register to the mod event bus so blocks get registered
 
         // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
-        CHANNEL.registerMessage(ID++, ParticleMessage.class, ParticleMessage::encode, ParticleMessage::decode, ParticleMessage::handle);
+        NeoForge.EVENT_BUS.register(this);
+
     }
-    public static void send(Object message, BlockPos pos, int range, Level level){
-        CHANNEL.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(pos.getX(), pos.getY(), pos.getZ(), range, level.dimension())), message);
+    public static void send(CustomPacketPayload message, BlockPos pos, int range, Level level){
+        PacketDistributor.sendToPlayersNear((ServerLevel) level,null,pos.getX(), pos.getY(), pos.getZ(), range,message);
     }
-    public static class EUCreativeTab {
-        public static final CreativeModeTab CREATIVE_MODE_TAB = new CreativeModeTab(EU.MODID) {
-            @Override
-            public @NotNull ItemStack makeIcon() {
-                return new ItemStack(Registry.sourceGeneratorItems.get(Type.DIM).get());
-            }
-        };
+    public static void register(RegisterPayloadHandlersEvent Event) {
+        var registrar = Event.registrar(EU.MODID).versioned(NETWORK_VERSION).optional();
+        registrar.playToClient(ParticleMessage.TYPE,ParticleMessage.STREAM_CODEC,ParticleMessage::handle);
+    }
+
+    public static void RegisterCapabilities(RegisterCapabilitiesEvent Event)
+    {
+        SourceGeneratorBlockEntity.RegisterCapability(Event);
+        SourceProducerBlockEntity.RegisterCapability(Event);
     }
 
     @SubscribeEvent
     public void commands(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("eu").then(Commands.literal("aura").then(Commands.argument("amount", IntegerArgumentType.integer()).then(Commands.argument("maxTarget", IntegerArgumentType.integer()).executes(ctx -> {
             var source = ctx.getSource();
-            var pos = new BlockPos(source.getPosition());
+            var pos = BlockPos.containing(source.getPosition());
             var chunk = IAuraChunk.getAuraChunk(source.getLevel(), pos);
             var amount = IntegerArgumentType.getInteger(ctx, "amount");
             var max = IntegerArgumentType.getInteger(ctx, "maxTarget");

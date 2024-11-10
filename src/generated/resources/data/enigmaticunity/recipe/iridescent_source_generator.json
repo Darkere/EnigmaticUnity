@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "g": {
+      "item": "ars_nouveau:source_gem_block"
+    },
+    "i": {
+      "item": "naturesaura:sky_ingot"
+    },
+    "w": {
+      "item": "ars_nouveau:blue_archwood_log"
+    }
+  },
+  "pattern": [
+    "   ",
+    " g ",
+    "iwi"
+  ],
+  "result": {
+    "count": 1,
+    "id": "enigmaticunity:iridescent_source_generator"
+  }
+}

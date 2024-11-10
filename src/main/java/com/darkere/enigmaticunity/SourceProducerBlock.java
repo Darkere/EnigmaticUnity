@@ -2,6 +2,7 @@ package com.darkere.enigmaticunity;
 
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -13,8 +14,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -24,12 +23,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.stream.Stream;
-
 public class SourceProducerBlock extends Block implements EntityBlock,SimpleWaterloggedBlock {
-    public Type type;
-
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public EUBlockType EUBlockType;
 
     private static final VoxelShape SHAPE_N = Shapes.join(
             Block.box(4.5, 4.5, 6, 11.5, 11.5, 13),
@@ -44,21 +39,21 @@ public class SourceProducerBlock extends Block implements EntityBlock,SimpleWate
 
     private static final VoxelShape[] SHAPES = new VoxelShape[] { SHAPE_D, SHAPE_U, SHAPE_N, SHAPE_S, SHAPE_W, SHAPE_E };
 
-    public SourceProducerBlock(Properties p_49795_, Type type) {
+    public SourceProducerBlock(Properties p_49795_, EUBlockType EUBlockType) {
         super(p_49795_);
-        this.type = type;
+        this.EUBlockType = EUBlockType;
         registerDefaultState(defaultBlockState().setValue(BlockStateProperties.WATERLOGGED,false));
     }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        return SHAPES[state.getValue(FACING).get3DDataValue()];
+        return SHAPES[state.getValue(BlockStateProperties.FACING).get3DDataValue()];
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         FluidState fluidState = context.getLevel().getFluidState(context.getClickedPos());
-        return this.defaultBlockState().setValue(FACING, context.getClickedFace()).setValue(BlockStateProperties.WATERLOGGED,fluidState.getType() == Fluids.WATER);
+        return this.defaultBlockState().setValue(BlockStateProperties.FACING, context.getClickedFace()).setValue(BlockStateProperties.WATERLOGGED,fluidState.getType() == Fluids.WATER);
     }
 
     @Override
@@ -73,23 +68,23 @@ public class SourceProducerBlock extends Block implements EntityBlock,SimpleWate
 
 
     @Override
-    public boolean canPlaceLiquid(BlockGetter worldIn, BlockPos pos, BlockState state, Fluid fluidIn) {
-        return SimpleWaterloggedBlock.super.canPlaceLiquid(worldIn, pos, state, fluidIn);
+    public boolean canPlaceLiquid(Player player, BlockGetter worldIn, BlockPos pos, BlockState state, Fluid fluidIn) {
+        return SimpleWaterloggedBlock.super.canPlaceLiquid(player, worldIn, pos, state, fluidIn);
     }
     @Override
     public BlockState rotate (BlockState state, Rotation rot) {
-        var newDir = rot.rotate(state.getValue(FACING));
-        return state.setValue(FACING, newDir);
+        var newDir = rot.rotate(state.getValue(BlockStateProperties.FACING));
+        return state.setValue(BlockStateProperties.FACING, newDir);
     }
 
     @Override
     public BlockState mirror (BlockState state, Mirror mirrorIn) {
-        return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
+        return state.rotate(mirrorIn.getRotation(state.getValue(BlockStateProperties.FACING)));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+        builder.add(BlockStateProperties.FACING);
         builder.add(BlockStateProperties.WATERLOGGED);
     }
 

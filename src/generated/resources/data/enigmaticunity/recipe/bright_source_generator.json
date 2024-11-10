@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "g": {
+      "item": "ars_nouveau:source_gem"
+    },
+    "i": {
+      "item": "naturesaura:tainted_gold"
+    },
+    "w": {
+      "item": "ars_nouveau:blue_archwood_log"
+    }
+  },
+  "pattern": [
+    "   ",
+    " g ",
+    "iwi"
+  ],
+  "result": {
+    "count": 1,
+    "id": "enigmaticunity:bright_source_generator"
+  }
+}

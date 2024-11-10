@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"particle": "enigmaticunity:blocks/base",
-		"base": "enigmaticunity:blocks/base"
+		"particle": "enigmaticunity:block/base",
+		"base": "enigmaticunity:block/base"
 	},
 	"elements": [
 		{

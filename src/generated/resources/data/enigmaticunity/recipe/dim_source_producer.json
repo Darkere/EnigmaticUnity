@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "item": "naturesaura:infused_iron"
+    },
+    "p": {
+      "item": "minecraft:glass_pane"
+    },
+    "s": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "w": {
+      "item": "ars_nouveau:purple_archwood_log"
+    }
+  },
+  "pattern": [
+    "ppp",
+    "psp",
+    "iwi"
+  ],
+  "result": {
+    "count": 1,
+    "id": "enigmaticunity:dim_source_producer"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "item": "naturesaura:infused_iron"
+    },
+    "s": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "w": {
+      "item": "ars_nouveau:blue_archwood_log"
+    }
+  },
+  "pattern": [
+    "   ",
+    " s ",
+    "iwi"
+  ],
+  "result": {
+    "count": 1,
+    "id": "enigmaticunity:dim_source_generator"
+  }
+}

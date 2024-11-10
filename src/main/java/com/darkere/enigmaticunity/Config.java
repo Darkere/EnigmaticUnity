@@ -1,18 +1,18 @@
 package com.darkere.enigmaticunity;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.EnumMap;
 
 public class Config {
 
-    public ForgeConfigSpec spec;
+    public ModConfigSpec spec;
     public SourceGenerator sourceGenerator;
-    public ForgeConfigSpec.DoubleValue auraConversion;
-    public ForgeConfigSpec.DoubleValue sourceConversion;
+    public ModConfigSpec.DoubleValue auraConversion;
+    public ModConfigSpec.DoubleValue sourceConversion;
 
     public Config() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         sourceGenerator = new SourceGenerator(builder);
         auraConversion = builder.comment("Conversion multiplier from Aura to Power").defineInRange("auraConversion", 10, Double.MIN_VALUE, Double.MAX_VALUE);
         sourceConversion = builder.comment("Conversion multiplier from Source to Power").defineInRange("sourceConversion", 10, Double.MIN_VALUE, Double.MAX_VALUE);
@@ -32,16 +32,16 @@ public class Config {
     static class SourceGenerator {
 
 
-        private EnumMap<Type, ForgeConfigSpec.IntValue> powerCapacity = new EnumMap<>(Type.class);
-        private EnumMap<Type, ForgeConfigSpec.IntValue> maxTransfer = new EnumMap<>(Type.class);
-        private EnumMap<Type, ForgeConfigSpec.IntValue> tickInterval = new EnumMap<>(Type.class);
-        private EnumMap<Type, ForgeConfigSpec.IntValue> range = new EnumMap<>(Type.class);
-        private EnumMap<Type, ForgeConfigSpec.DoubleValue> conversionRatio = new EnumMap<>(Type.class);
-        private EnumMap<Type, ForgeConfigSpec.IntValue> amountPerOperation = new EnumMap<>(Type.class);
-        private EnumMap<Type, ForgeConfigSpec.IntValue> auraChange = new EnumMap<>(Type.class);
+        private EnumMap<EUBlockType, ModConfigSpec.IntValue> powerCapacity = new EnumMap<>(EUBlockType.class);
+        private EnumMap<EUBlockType, ModConfigSpec.IntValue> maxTransfer = new EnumMap<>(EUBlockType.class);
+        private EnumMap<EUBlockType, ModConfigSpec.IntValue> tickInterval = new EnumMap<>(EUBlockType.class);
+        private EnumMap<EUBlockType, ModConfigSpec.IntValue> range = new EnumMap<>(EUBlockType.class);
+        private EnumMap<EUBlockType, ModConfigSpec.DoubleValue> conversionRatio = new EnumMap<>(EUBlockType.class);
+        private EnumMap<EUBlockType, ModConfigSpec.IntValue> amountPerOperation = new EnumMap<>(EUBlockType.class);
+        private EnumMap<EUBlockType, ModConfigSpec.IntValue> auraChange = new EnumMap<>(EUBlockType.class);
 
-        public SourceGenerator(ForgeConfigSpec.Builder builder) {
-            for (Type value : Type.values()) {
+        public SourceGenerator(ModConfigSpec.Builder builder) {
+            for (EUBlockType value : EUBlockType.values()) {
                 builder.push(value.getFName() + " type");
                 powerCapacity.put(value, builder.comment("Power Buffer size  of the " + value.getFName() + " type").defineInRange("powerBuffer", value.getDefaultPowerBuffer(), 0, Integer.MAX_VALUE));
                 maxTransfer.put(value, builder.comment("Max amount of power transfer for the " + value.getFName() + " type per tick").defineInRange("maxPowertransfer", value.getDefaultMaxTransfer(), 0, Integer.MAX_VALUE));
@@ -53,28 +53,28 @@ public class Config {
             }
         }
 
-        public int getManaGeneratorPowerBuffer(Type type) {
-            return powerCapacity.get(type).get();
+        public int getManaGeneratorPowerBuffer(EUBlockType EUBlockType) {
+            return powerCapacity.get(EUBlockType).get();
         }
 
-        public int getTickInterval(Type type) {
-            return tickInterval.get(type).get();
+        public int getTickInterval(EUBlockType EUBlockType) {
+            return tickInterval.get(EUBlockType).get();
         }
 
-        public int getRange(Type type) {
-            return range.get(type).get();
+        public int getRange(EUBlockType EUBlockType) {
+            return range.get(EUBlockType).get();
         }
 
-        public int getAmountPerOperation(Type type) {
-            return amountPerOperation.get(type).get();
+        public int getAmountPerOperation(EUBlockType EUBlockType) {
+            return amountPerOperation.get(EUBlockType).get();
         }
 
-        public int getAuraChange(Type type) {
-            return auraChange.get(type).get();
+        public int getAuraChange(EUBlockType EUBlockType) {
+            return auraChange.get(EUBlockType).get();
         }
 
-        public int getMaxTransfer(Type type) {
-            return maxTransfer.get(type).get();
+        public int getMaxTransfer(EUBlockType EUBlockType) {
+            return maxTransfer.get(EUBlockType).get();
         }
     }
 
