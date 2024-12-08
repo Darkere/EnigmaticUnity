@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.energy.EnergyStorage;
@@ -68,7 +69,7 @@ public class SourceProducerBlockEntity extends BlockEntity {
                 jar.getSource().addSource(EUBlockType.getAmountPerOperation());
                 power.extractEnergy(powerConsumed, false);
 
-                EntityFollowProjectile aoeProjectile = new EntityFollowProjectile(level, getBlockPos(), jar.getCurrentPos());
+                EntityFollowProjectile aoeProjectile = new EntityFollowProjectile(level, Vec3.atCenterOf(getBlockPos()), Vec3.atCenterOf(jar.getCurrentPos()));
                 getLevel().addFreshEntity(aoeProjectile);
 
             }, () -> {

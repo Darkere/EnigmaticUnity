@@ -236,6 +236,6 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
     apiToken = System.getenv('curseforge_token')
     def mainFile = upload(808025, jar)
     mainFile.releaseType = "beta"
-    mainFile.changelog = '- ported to 1.21.1'
-   mainFile.addModLoader("neoforge")
+    mainFile.changelog = '- compat with ars 5.3.5'
+    mainFile.addModLoader("NeoForge")
 }
