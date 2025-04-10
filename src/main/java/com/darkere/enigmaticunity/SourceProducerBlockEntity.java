@@ -2,7 +2,7 @@ package com.darkere.enigmaticunity;
 
 import com.hollingsworth.arsnouveau.api.util.SourceUtil;
 import com.hollingsworth.arsnouveau.common.entity.EntityFollowProjectile;
-import com.mojang.math.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import de.ellpeck.naturesaura.api.aura.chunk.IAuraChunk;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -87,7 +87,7 @@ public class SourceProducerBlockEntity extends BlockEntity {
                     var spot = IAuraChunk.getLowestSpot(getLevel(),getBlockPos(),20,getBlockPos());
                     var chunk = IAuraChunk.getAuraChunk(getLevel(), spot);
                     chunk.storeAura(spot, type.getAuraChange(), false, false);
-                    var vec = new Vector3d(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+                    var vec = new Vec3(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
                     EU.send(new ParticleMessage(vec, true, facing), getBlockPos(), 100, getLevel());
                 }
             });

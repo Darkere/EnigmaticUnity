@@ -1,12 +1,11 @@
 package com.darkere.enigmaticunity;
 
 import com.hollingsworth.arsnouveau.api.util.SourceUtil;
-import com.mojang.math.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import de.ellpeck.naturesaura.api.aura.chunk.IAuraChunk;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -70,7 +69,7 @@ public class SourceGeneratorBlockEntity extends BlockEntity {
                     var chunk = IAuraChunk.getAuraChunk(getLevel(), spot);
                     chunk.drainAura(spot, type.getAuraChange(), true, false);
 
-                    var vec = new Vector3d(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
+                    var vec = new Vec3(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ());
 
                     EU.send(new ParticleMessage(vec, false, facing), getBlockPos(), 100, getLevel());
                 }
