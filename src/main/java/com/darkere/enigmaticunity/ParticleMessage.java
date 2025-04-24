@@ -1,22 +1,22 @@
 package com.darkere.enigmaticunity;
 
-import com.mojang.math.Vector3d;
-import com.mojang.math.Vector3f;
+import net.minecraft.world.phys.Vec3;
 import de.ellpeck.naturesaura.api.NaturesAuraAPI;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
+import org.joml.Vector3f;
 
 import java.util.function.Supplier;
 
 public class ParticleMessage {
 
-    Vector3d location;
+    Vec3 location;
     boolean generate;
     Direction dir;
 
-    public ParticleMessage(Vector3d location, boolean generate, Direction dir) {
+    public ParticleMessage(Vec3 location, boolean generate, Direction dir) {
         this.location = location;
         this.generate = generate;
         this.dir = dir;
@@ -34,10 +34,10 @@ public class ParticleMessage {
         var x = buf.readDouble();
         var y = buf.readDouble();
         var z = buf.readDouble();
-        var vect = new Vector3d(x,y,z);
+        var vect = new Vec3(x,y,z);
         var generate = buf.readBoolean();
         var pos = buf.readBlockPos();
-        return new ParticleMessage(vect,generate,Direction.fromNormal(pos));
+        return new ParticleMessage(vect,generate,Direction.getNearest(pos.getX(), pos.getY(), pos.getZ()));
     }
 
     public static void handle(ParticleMessage msg, Supplier<NetworkEvent.Context> contextSupplier) {
@@ -49,7 +49,7 @@ public class ParticleMessage {
             for (int i = 0; i < max; i++) {
                 if (msg.generate) {
                     Vector3f scatter = new Vector3f((float) Math.random() * 0.02F * (Math.random() > 0.5f ? -1 : 1), (float) Math.random() * 0.04F + 0.02F, (float) Math.random() * 0.02F * (Math.random() > 0.5f ? -1 : 1));
-                    scatter.transform(msg.dir.getRotation());
+                    scatter.rotate(msg.dir.getRotation());
                     NaturesAuraAPI.instance().spawnMagicParticle(
                         msg.location.x + vector.x(),
                         msg.location.y + vector.y(),
@@ -65,7 +65,7 @@ public class ParticleMessage {
                     var y = Math.random() * 0.04F + 0.02F;
                     var z = Math.random() * 0.02F * (Math.random() > 0.5f ? -1 : 1);
                     Vector3f vec = new Vector3f((float) x, (float) y, (float) z);
-                    vec.transform(msg.dir.getRotation());
+                    vec.rotate(msg.dir.getRotation());
                     NaturesAuraAPI.instance().spawnMagicParticle(
                         msg.location.x + 20 * vec.x() + vector.x(),
                         msg.location.y + 20 * vec.y() + vector.y(),
