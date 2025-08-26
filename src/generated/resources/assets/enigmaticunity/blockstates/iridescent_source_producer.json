@@ -3,12 +3,12 @@
     "facing=down,waterlogged=false": {
       "model": "enigmaticunity:block/iridescent_source_producer",
       "x": 180,
-      "y": 270
+      "y": 180
     },
     "facing=down,waterlogged=true": {
       "model": "enigmaticunity:block/iridescent_source_producer",
       "x": 180,
-      "y": 270
+      "y": 180
     },
     "facing=east,waterlogged=false": {
       "model": "enigmaticunity:block/iridescent_source_producer",
@@ -39,12 +39,10 @@
       "y": 180
     },
     "facing=up,waterlogged=false": {
-      "model": "enigmaticunity:block/iridescent_source_producer",
-      "y": 270
+      "model": "enigmaticunity:block/iridescent_source_producer"
     },
     "facing=up,waterlogged=true": {
-      "model": "enigmaticunity:block/iridescent_source_producer",
-      "y": 270
+      "model": "enigmaticunity:block/iridescent_source_producer"
     },
     "facing=west,waterlogged=false": {
       "model": "enigmaticunity:block/iridescent_source_producer",

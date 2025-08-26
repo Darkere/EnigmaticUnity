@@ -54,12 +54,12 @@ public class EUBlockStateProvider extends BlockStateProvider {
     }
 
     private int getDirection(Direction facing) {
-        return (int)facing.getOpposite().toYRot();
-//        return switch (facing) {
-//            case DOWN, SOUTH -> 180;
-//            case EAST -> 90;
-//            case NORTH, UP -> 0;
-//            case WEST -> 270;
-//        };
+//        return (int)facing.getOpposite().toYRot();
+        return switch (facing) {
+            case DOWN, SOUTH -> 180;
+            case EAST -> 90;
+            case NORTH, UP -> 0;
+            case WEST -> 270;
+        };
     }
 }
